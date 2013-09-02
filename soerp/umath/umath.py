@@ -64,8 +64,8 @@ def atan(x):
     return _make_UF_compatible_object(admath.atan(x))
 __all__.append('atan')
 
-def atan2(x, y):
-    return _make_UF_compatible_object(admath.atan2(x))
+def atan2(y, x):
+    return _make_UF_compatible_object(admath.atan2(y, x))
 __all__.append('atan2')
 
 def atanh(x):

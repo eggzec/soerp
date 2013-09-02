@@ -441,7 +441,7 @@ class UncertainFunction(ADF):
     
     def __lt__(self,val):
         self,val = map(to_uncertain_func,[self,val])
-        return True if float(self.mean()-val.mean()) < 0 else False
+        return True if float(self.mean-val.mean) < 0 else False
     
     def __le__(self,val):
         return (self==val) or self < val
