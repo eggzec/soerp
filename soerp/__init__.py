@@ -44,6 +44,33 @@ from .distributions import (
     weibull,
 )
 from .method_of_moments import raw2central
+from .pdf_estimator import (
+    PEARSON_TYPE_I,
+    PEARSON_TYPE_II,
+    PEARSON_TYPE_III,
+    PEARSON_TYPE_IV,
+    PEARSON_TYPE_V,
+    PEARSON_TYPE_VI,
+    PEARSON_TYPE_VII,
+    compare_methods,
+    cornish_fisher_distribution,
+    cornish_fisher_pdf,
+    cornish_fisher_quantile,
+    cornish_fisher_sample,
+    edgeworth_cdf,
+    edgeworth_pdf,
+    edgeworth_sample,
+    fit_pearson,
+    monte_carlo_cdf,
+    monte_carlo_pdf,
+    monte_carlo_quantile,
+    monte_carlo_sample,
+    pearson_cdf,
+    pearson_pdf,
+    pearson_sample,
+    pearson_type_from_moments,
+    plot_comparison,
+)
 from .statistics import correlation_matrix, covariance_matrix
 from .uncertain_function import (
     CONSTANT_TYPES,
@@ -53,7 +80,7 @@ from .uncertain_function import (
     make_uf_compatible_object,
     to_uncertain_func,
 )
-from .uncertain_variable import UncertainVariable, uv
+from .uncertain_variable import UncertainVariable, pdf, uv
 
 
 __author__ = "Abraham Lee"
@@ -65,6 +92,13 @@ except PackageNotFoundError:
 
 __all__ = [
     "CONSTANT_TYPES",
+    "PEARSON_TYPE_I",
+    "PEARSON_TYPE_II",
+    "PEARSON_TYPE_III",
+    "PEARSON_TYPE_IV",
+    "PEARSON_TYPE_V",
+    "PEARSON_TYPE_VI",
+    "PEARSON_TYPE_VII",
     "Beta",
     "Chi2",
     "Exp",
@@ -82,14 +116,33 @@ __all__ = [
     "_unary_op",
     "beta",
     "chi_squared",
+    "compare_methods",
+    "cornish_fisher_distribution",
+    "cornish_fisher_pdf",
+    "cornish_fisher_quantile",
+    "cornish_fisher_sample",
     "correlation_matrix",
     "covariance_matrix",
+    "edgeworth_cdf",
+    "edgeworth_pdf",
+    "edgeworth_sample",
     "exponential",
     "f_distribution",
+    "fit_pearson",
     "gamma",
     "log_normal",
     "make_uf_compatible_object",
+    "monte_carlo_cdf",
+    "monte_carlo_pdf",
+    "monte_carlo_quantile",
+    "monte_carlo_sample",
     "normal",
+    "pdf",
+    "pearson_cdf",
+    "pearson_pdf",
+    "pearson_sample",
+    "pearson_type_from_moments",
+    "plot_comparison",
     "raw2central",
     "student_t",
     "to_uncertain_func",
