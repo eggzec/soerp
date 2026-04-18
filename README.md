@@ -1,4 +1,6 @@
-# ``soerp`` Second Order Error Propagation for Python
+# soerp
+
+**Second Order Error Propagation for Python**
 
 [![Tests](https://github.com/eggzec/soerp/actions/workflows/code_test.yml/badge.svg)](https://github.com/eggzec/soerp/actions/workflows/code_test.yml)
 [![Documentation](https://github.com/eggzec/soerp/actions/workflows/docs_build.yml/badge.svg)](https://github.com/eggzec/soerp/actions/workflows/docs_build.yml)
