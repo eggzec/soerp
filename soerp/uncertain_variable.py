@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.stats as ss
 
+from . import pdf_estimator
 from .method_of_moments import raw2central
 from .uncertain_function import UncertainFunction
 
@@ -391,6 +392,63 @@ class UncertainVariable(UncertainFunction):
             raise ValueError("Input moments must include eight values")
         self._moments = m
 
+    def pdf(
+        self, x: "float | np.ndarray", method: str = "cornish_fisher"
+    ) -> "float | np.ndarray":
+        """Estimate the probability density function at given points.
+
+        Parameters
+        ----------
+        x : float or array-like
+            Points at which to evaluate the PDF
+        method : str, optional
+            Estimation method: "cornish_fisher" (default),
+            "edgeworth", "pearson", or "monte_carlo".
+
+        Raises
+        ------
+        ValueError
+            If method unknown.
+
+        Returns
+        -------
+        float or ndarray
+            PDF values at the given points
+
+        Examples
+        --------
+        >>> x = N(0, 1)
+        >>> y = N(1, 2)
+        >>> z = x + y
+        >>> z.pdf(0.5)
+        0.20...
+        >>> z.pdf([0, 1, 2], method="edgeworth")
+        array([0.24..., 0.30..., 0.17...])
+        """
+        mn = self.moments(0)
+        vr = self.moments(1)
+        sk = self.moments(2)
+        kt = self.moments(3)
+
+        if self._dist is not None:
+            return self._dist.pdf(x)
+
+        method_lower = method.lower()
+        if method_lower == "cornish_fisher":
+            return pdf_estimator.cornish_fisher_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "edgeworth":
+            return pdf_estimator.edgeworth_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "pearson":
+            return pdf_estimator.pearson_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "monte_carlo":
+            return pdf_estimator.monte_carlo_pdf(x, mn, vr, sk, kt)
+        else:
+            raise ValueError(
+                f"Unknown method: {method}. "
+                "Use 'cornish_fisher', 'edgeworth', "
+                "'pearson', or 'monte_carlo'"
+            )
+
     if matplotlib_installed:
 
         def plot(
@@ -398,10 +456,15 @@ class UncertainVariable(UncertainFunction):
         ) -> None:
             """Plot the distribution of the input variable.
 
-            NOTE: This requires defining the input using a distribution from
-            the ``scipy.stats`` module.
-
+            NOTE: If a scipy distribution was provided, use its exact PDF.
+            Otherwise, use the Cornish-Fisher approximation from moments.
             """
+            mn = self.moments(0)
+            vr = self.moments(1)
+            sk = self.moments(2)
+            kt = self.moments(3)
+            std = np.sqrt(vr)
+
             if self._dist is not None:
                 if vals is None:
                     low = self._dist.ppf(0.0001)
@@ -411,14 +474,123 @@ class UncertainVariable(UncertainFunction):
                     high = max(vals)
                 vals = np.linspace(low, high, 500)
                 plt.plot(vals, self._dist.pdf(vals), **kwargs)
-                plt.xlim(low - (high - low) * 0.1, high + (high - low) * 0.1)
-                plt.show()
             else:
-                raise NotImplementedError(
-                    "Cannot determine a distribution's "
-                    "pdf only by its moments (yet). Please use a scipy "
-                    "distribution if you want to plot."
+                if vals is None:
+                    quantiles = np.array([-1.5, -1, -0.5, 0, 0.5, 1, 1.5])
+                    x_vals = np.array([
+                        _cornish_fisher_quantile(q, mn, std, sk, kt)
+                        for q in quantiles
+                    ])
+                    low = min(x_vals)
+                    high = max(x_vals)
+                else:
+                    low = min(vals)
+                    high = max(vals)
+
+                x_plot = np.linspace(
+                    low - (high - low) * 0.1, high + (high - low) * 0.1, 500
                 )
+                y = pdf(x_plot, mn, vr, sk, kt)
+                plt.plot(x_plot, y, **kwargs)
+
+            plt.xlim(low - (high - low) * 0.1, high + (high - low) * 0.1)
+            plt.show()
+
+
+def _cornish_fisher_quantile(
+    z: float, mean: float, std: float, skew: float, kurt: float
+) -> float:
+    r"""Apply Cornish-Fisher expansion to approximate quantiles from moments.
+
+    Parameters
+    ----------
+    z : float
+        Standard normal quantile
+    mean : float
+        Distribution mean
+    std : float
+        Distribution standard deviation
+    skew : float
+        Distribution skewness
+    kurt : float
+        Distribution kurtosis
+
+    Returns
+    -------
+    float
+        Approximate quantile from the distribution
+    """
+    excess_kurt = kurt - 3
+    z_cf = (
+        z
+        + (z**2 - 1) * skew / 6
+        + (z**3 - 3 * z) * excess_kurt / 24
+        - (2 * z**3 - 5 * z) * skew**2 / 36
+    )
+    return mean + std * z_cf
+
+
+def pdf(
+    x: float | np.ndarray,
+    mean: float,
+    var: float,
+    skew: float = 0.0,
+    kurt: float = 3.0,
+) -> float | np.ndarray:
+    r"""Estimate probability density function from moments using Cornish-Fisher.
+
+    Parameters
+    ----------
+    x : float or array-like
+        Points at which to evaluate the PDF
+    mean : float
+        First moment (mean)
+    var : float
+        Second moment (variance)
+    skew : float, optional
+        Third standardized moment (skewness). Default is 0.
+    kurt : float, optional
+        Fourth standardized moment (kurtosis). Default is 3.
+
+    Returns
+    -------
+    float or ndarray
+        PDF values at the given points
+
+    Raises
+    ------
+    ValueError
+        If variance is not positive
+    """
+    if var <= 0:
+        raise ValueError("Variance must be positive")
+
+    std = np.sqrt(var)
+    excess_kurt = kurt - 3
+
+    if isinstance(x, (int, float)):
+        x = np.array([x])
+    else:
+        x = np.asarray(x)
+
+    z_values = (x - mean) / std
+
+    adjusted_z = (
+        z_values
+        + (z_values**2 - 1) * skew / 6
+        + (z_values**3 - 3 * z_values) * excess_kurt / 24
+        - (2 * z_values**3 - 5 * z_values) * skew**2 / 36
+    )
+
+    adjusted_x = mean + std * adjusted_z
+
+    pdf_values = np.exp(-0.5 * ((adjusted_x - mean) / std) ** 2) / (
+        std * np.sqrt(2 * np.pi)
+    )
+
+    if isinstance(x, np.ndarray) and len(pdf_values) == 1:
+        return float(pdf_values[0])
+    return pdf_values
 
 
 uv = UncertainVariable  # a nicer form for the user

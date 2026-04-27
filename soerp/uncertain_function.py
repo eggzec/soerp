@@ -413,6 +413,56 @@ class UncertainFunction:  # noqa: PLR0904
         s += f" > Kurtosis Coefficient... {kt: }\n"
         print(s)
 
+    def pdf(
+        self, x: "float | np.ndarray", method: str = "cornish_fisher"
+    ) -> "float | np.ndarray":
+        """Estimate PDF at given points.
+
+        Parameters
+        ----------
+        x : float or array-like
+            Points at which to evaluate PDF.
+        method : str
+            Estimation method: "cornish_fisher" (default),
+            "edgeworth", "pearson", or "monte_carlo".
+
+        Returns
+        -------
+        float or ndarray
+            PDF values.
+
+        Raises
+        ------
+        ValueError
+            If variance <= 0 or method unknown.
+        ImportError
+            If pdf_estimator module not available.
+        """
+        mn = self.moments(0)
+        vr = self.moments(1)
+        sk = self.moments(2)
+        kt = self.moments(3)
+
+        if vr <= 0:
+            raise ValueError("Variance must be positive")
+
+        try:
+            from . import pdf_estimator as pe  # noqa: PLC0415
+        except ImportError as err:
+            raise ImportError("pdf_estimator module required") from err
+
+        method_lower = method.lower()
+        if method_lower == "cornish_fisher":
+            return pe.cornish_fisher_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "edgeworth":
+            return pe.edgeworth_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "pearson":
+            return pe.pearson_pdf(x, mn, vr, sk, kt)
+        elif method_lower == "monte_carlo":
+            return pe.monte_carlo_pdf(x, mn, vr, sk, kt)
+        else:
+            raise ValueError(f"Unknown method: {method}")
+
     def _get_inputs_for_soerp(self) -> tuple:
         """
         Prepare variable moments and derivatives for method-of-moments
