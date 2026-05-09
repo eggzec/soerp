@@ -13,8 +13,8 @@ extra:
 
 theme:
   name: material
-  favicon: assets/SOERP.ico
-  logo: assets/SOERP.svg
+  favicon: assets/favicon.svg
+  logo: assets/favicon.svg
   features:
     - content.code.copy
 
