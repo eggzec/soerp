@@ -1,5 +1,7 @@
 # soerp
 
+![SOERP logo](assets/SOERP.svg){ width="100" }
+
 **Second Order Error Propagation for Python**
 
 ---
