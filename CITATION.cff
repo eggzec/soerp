@@ -6,10 +6,6 @@ abstract: >
   Second-Order Error Propagation (SOERP) is a Python package for
   propagating uncertainties through mathematical expressions using a
   second-order Taylor series approach.
-authors:
-  - family-names: "Mayfield"
-    given-names: "Abraham D."
-    alias: tisimst
 repository-code: "https://github.com/eggzec/soerp"
 license: BSD-3-Clause
 keywords:
