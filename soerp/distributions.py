@@ -1,3 +1,5 @@
+import math
+
 import scipy.stats as ss
 
 from .uncertain_variable import UncertainVariable, uv
@@ -163,9 +165,11 @@ def log_normal(
     Parameters
     ----------
     mu : scalar
-        The location parameter
+        The mean of the underlying normal distribution (log-mean), i.e.
+        E[ln(X)] = mu. The median of the resulting distribution is exp(mu).
     sigma : scalar
-        The scale parameter (must be positive and non-zero)
+        The standard deviation of the underlying normal distribution
+        (must be positive and non-zero)
 
     Returns
     -------
@@ -179,7 +183,7 @@ def log_normal(
     """
     if sigma <= 0:
         raise ValueError("Sigma must be positive")
-    return uv(rv=ss.lognorm(sigma, loc=mu), tag=tag)
+    return uv(rv=ss.lognorm(sigma, loc=0, scale=math.exp(mu)), tag=tag)
 
 
 ###############################################################################
