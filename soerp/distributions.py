@@ -272,7 +272,7 @@ def triangular(
     """
     if not (a <= c <= b):
         raise ValueError("peak must lie in between low and high")
-    return uv(rv=ss.triang(c, loc=a, scale=b - a), tag=tag)
+    return uv(rv=ss.triang((c - a) / float(b - a), loc=a, scale=b - a), tag=tag)
 
 
 ###############################################################################
