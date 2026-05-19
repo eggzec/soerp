@@ -332,7 +332,7 @@ def weibull(
         raise ValueError(
             "Weibull scale and shape parameters must be greater than zero"
         )
-    return uv(rv=ss.exponweib(lamda, k), tag=tag)
+    return uv(rv=ss.weibull_min(k, loc=0, scale=lamda), tag=tag)
 
 
 N = normal
