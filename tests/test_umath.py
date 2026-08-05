@@ -39,7 +39,7 @@ class TestUmath:
 
     def test_exp_uncertain(self):
         # E[exp(X)] for X~N(0, sigma) includes the second-order correction:
-        # E[exp(X)] ≈ $\exp(\mu) \cdot (1 + \sigma^2/2) = \exp(0) \cdot (1 + 0.01/2) = 1.005$  # noqa: E501
+        # E[exp(X)] ≈ $\exp(\mu) \cdot (1 + \sigma^2/2) = \exp(0) \cdot (1 + 0.01/2) = 1.005$  # ruff: ignore[line-too-long]
         x = N(0.0, 0.1)
         r = umath.exp(x)
         assert r.mean == pytest.approx(1.005, rel=1e-3)

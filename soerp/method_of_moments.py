@@ -128,7 +128,7 @@ def standardize(
 ###############################################################################
 
 
-def rawmoment(  # noqa: PLR0912, PLR0915
+def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
     slc: NDArray, sqc: NDArray, scp: NDArray, vm: NDArray, k: int
 ) -> float:
     """
@@ -177,7 +177,7 @@ def rawmoment(  # noqa: PLR0912, PLR0915
     ############################
     # The 0th raw moment
 
-    if k == 0:  # noqa: PLR1702
+    if k == 0:  # ruff: ignore[too-many-nested-blocks]
         ans = 1
 
     ############################
@@ -873,7 +873,7 @@ def variance_contrib(
 ###############################################################################
 
 
-def soerp_numeric(  # noqa: PLR0912, PLR0913, PLR0917
+def soerp_numeric(  # ruff: ignore[too-many-branches, too-many-arguments, too-many-positional-arguments]
     slc: NDArray,
     sqc: NDArray,
     scp: NDArray,
@@ -962,7 +962,7 @@ def soerp_numeric(  # noqa: PLR0912, PLR0913, PLR0917
         FOURTH CENTRAL MOMENT (MU4DL).............  3.8956371E+12
         COEFFICIENT OF KURTOSIS (BETA2)...........  4.1121529E+00
         ********************************************************************************
-    """  # noqa: E501
+    """  # ruff: ignore[line-too-long]
     if not silent:
         print("\n", "*" * 80)
         if title:
@@ -1007,7 +1007,7 @@ def soerp_numeric(  # noqa: PLR0912, PLR0913, PLR0917
         for i in range(n - 1):
             for j in range(i + 1, n):
                 print(
-                    f"Variance Contribution of cp[x{i:d}, x{j:d}]: {vcp[i, j]:7.5%}"  # noqa: E501
+                    f"Variance Contribution of cp[x{i:d}, x{j:d}]: {vcp[i, j]:7.5%}"  # ruff: ignore[line-too-long]
                 )
 
     ############################
