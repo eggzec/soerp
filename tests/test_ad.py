@@ -10,7 +10,7 @@ from soerp import N, uv
 
 class TestADCorrectness:
     def test_linear_mean_and_var(self):
-        # z = a*x + b*y  →  var(z) = $a^2 \cdot \text{var}(x) + b^2 \cdot \text{var}(y)$ for independent x, y  # noqa: E501
+        # z = a*x + b*y  →  var(z) = $a^2 \cdot \text{var}(x) + b^2 \cdot \text{var}(y)$ for independent x, y  # ruff: ignore[line-too-long]
         x = uv([2.0, 1.0, 0, 3, 0, 15, 0, 105])
         y = uv([3.0, 4.0, 0, 3, 0, 15, 0, 105])
         z = 2 * x + 3 * y

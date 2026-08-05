@@ -23,7 +23,7 @@ class TestTwoBarTruss:
         P = cls(66, 1.0, tag="P")
         return H, B, d, t, E, rho, P
 
-    def _compute(self, H, B, d, t, E, rho, P):  # noqa: PLR0913, PLR0917
+    def _compute(self, H, B, d, t, E, rho, P):  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
         pi = self.pi
         wght = 2 * pi * rho * d * t * umath.sqrt((B / 2) ** 2 + H**2)
         strs = (P * umath.sqrt((B / 2) ** 2 + H**2)) / (2 * pi * d * t * H)
@@ -31,7 +31,7 @@ class TestTwoBarTruss:
         defl = (P * ((B / 2) ** 2 + H**2) ** 1.5) / (2 * pi * d * t * H**2 * E)
         return wght, strs, buck, defl
 
-    def test_means_match_deterministic(self):  # noqa: PLR0914
+    def test_means_match_deterministic(self):  # ruff: ignore[too-many-locals]
         H, B, d, t, E, rho, P = self._build(N)
         wght, strs, buck, defl = self._compute(H, B, d, t, E, rho, P)
 

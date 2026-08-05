@@ -48,7 +48,7 @@ def _uf_unary(
     return hx
 
 
-def _uf_binary(  # noqa: PLR0913, PLR0917
+def _uf_binary(  # ruff: ignore[too-many-arguments, too-many-positional-arguments]
     x: UncertainFunction | float,
     y: UncertainFunction | float,
     hx: float,
@@ -195,7 +195,7 @@ def atan2(
     # $\partial/\partial y = x/r^2$, $\partial/\partial x = -y/r^2$
     dh_dy = xv / r2
     dh_dx = -yv / r2
-    # $\partial^2/\partial y^2 = -2xy/r^4$,  $\partial^2/\partial x^2 = 2xy/r^4$,  $\partial^2/(\partial x \partial y) = (y^2-x^2)/r^4$ # noqa: E501
+    # $\partial^2/\partial y^2 = -2xy/r^4$,  $\partial^2/\partial x^2 = 2xy/r^4$,  $\partial^2/(\partial x \partial y) = (y^2-x^2)/r^4$ # ruff: ignore[line-too-long]
     d2h_dy2 = -2.0 * xv * yv / (r2 * r2)
     d2h_dx2 = 2.0 * xv * yv / (r2 * r2)
     d2h_dxy = (yv * yv - xv * xv) / (r2 * r2)
@@ -212,7 +212,7 @@ def acot(x: UncertainFunction | float) -> UncertainFunction | float:
     -------
     result : UncertainFunction | float
         acot(x) with uncertainty propagated.
-    """  # noqa: E501
+    """  # ruff: ignore[line-too-long]
     fx = x.x if isinstance(x, UncertainFunction) else x
     q = 1.0 + fx * fx
     d1 = -1.0 / q
@@ -690,7 +690,7 @@ def gamma(x: UncertainFunction | float) -> UncertainFunction | float:
     -------
     result : UncertainFunction | float
         $\Gamma(x)$ with uncertainty propagated.
-    """  # noqa: E501
+    """  # ruff: ignore[line-too-long]
     fx = x.x if isinstance(x, UncertainFunction) else x
     gx = math.gamma(fx)
     psi = float(digamma(fx))

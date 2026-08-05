@@ -58,7 +58,7 @@ from .uncertain_variable import UncertainVariable, uv
 
 __author__ = "Abraham Lee"
 
-try:  # noqa: RUF067, RUF100
+try:  # ruff: ignore[non-empty-init-module]
     __version__ = version(__name__)
 except PackageNotFoundError:
     __version__ = "unknown"

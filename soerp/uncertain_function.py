@@ -44,9 +44,9 @@ def to_uncertain_func(
 #
 # Each UncertainFunction stores:
 #   x    - function value
-#   _lc  - {var: $\partial f/\partial \text{var}$}              first-order partials                        # noqa: E501
-#   _qc  - {var: $\partial^2 f/\partial \text{var}^2$}            pure second-order partials                  # noqa: E501
-#   _cp  - {(var_i, var_j): $\partial^2 f/(\partial \text{var}_i \partial \text{var}_j)$}  cross second-order partials (i < j)   # noqa: E501
+#   _lc  - {var: $\partial f/\partial \text{var}$}              first-order partials                        # ruff: ignore[line-too-long]
+#   _qc  - {var: $\partial^2 f/\partial \text{var}^2$}            pure second-order partials                  # ruff: ignore[line-too-long]
+#   _cp  - {(var_i, var_j): $\partial^2 f/(\partial \text{var}_i \partial \text{var}_j)$}  cross second-order partials (i < j)   # ruff: ignore[line-too-long]
 #
 # The chain rules implemented here are exact for polynomial functions and give
 # the second-order Taylor approximation for non-polynomial ones, which is
@@ -54,7 +54,7 @@ def to_uncertain_func(
 ###############################################################################
 
 
-def _combine_op(  # noqa: PLR0913, PLR0914, PLR0917
+def _combine_op(  # ruff: ignore[too-many-arguments, too-many-locals, too-many-positional-arguments]
     f: "UncertainFunction",
     g: "UncertainFunction",
     hx: float,
@@ -179,7 +179,7 @@ def _unary_op(
 ###############################################################################
 
 
-class UncertainFunction:  # noqa: PLR0904
+class UncertainFunction:  # ruff: ignore[too-many-public-methods]
     """
     UncertainFunction objects represent the uncertainty of a result of
     calculations with uncertain variables. Nearly all basic mathematical
@@ -202,7 +202,7 @@ class UncertainFunction:  # noqa: PLR0904
         lc : dict   - {var: $\partial f/\partial \text{var}$}          first-order partials
         qc : dict   - {var: $\partial^2 f/\partial \text{var}^2$}         pure second-order partials
         cp : dict   - {(var_i, var_j): $\partial^2 f/(\partial \text{var}_i \partial \text{var}_j)$}   cross partials  (i < j ordering)
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
         self.x = float(x)
         self._lc = lc if lc is not None else {}
         self._qc = qc if qc is not None else {}
@@ -222,7 +222,7 @@ class UncertainFunction:  # noqa: PLR0904
         -------
         derivative : dict or float
             First-derivative dict if var is None, else scalar $\partial f/\partial \text{var}$.
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
         if var is None:
             return self._lc
         return self._lc.get(var, 0.0)
@@ -234,7 +234,7 @@ class UncertainFunction:  # noqa: PLR0904
         -------
         derivative : dict or float
             Pure second-derivative dict if var is None, else $\partial^2 f/\partial \text{var}^2$.
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
         if var is None:
             return self._qc
         return self._qc.get(var, 0.0)
@@ -250,7 +250,7 @@ class UncertainFunction:  # noqa: PLR0904
         -------
         derivative : dict or float
             Cross-derivative dict if var1 is None, else $\partial^2 f/(\partial \text{var}_1 \partial \text{var}_2)$.
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
         if var1 is None:
             return self._cp
         return self._cp.get((var1, var2), self._cp.get((var2, var1), 0.0))
@@ -447,7 +447,7 @@ class UncertainFunction:  # noqa: PLR0904
 
         return (slc, sqc, scp, var_moments, f0)
 
-    def error_components(  # noqa: PLR0912, PLR0914, PLR0915
+    def error_components(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements]
         self, *, pprint: bool = False, as_eq_terms: bool = False
     ) -> "dict | tuple | None":
         """
