@@ -138,8 +138,8 @@ def cot(x: UncertainFunction | float) -> UncertainFunction | float:
     fx = x.x if isinstance(x, UncertainFunction) else x
     c = math.cos(fx)
     s = math.sin(fx)
-    ct = c / s
-    cs = s / c
+    ct = c / s  # cot(x)
+    cs = 1.0 / s  # csc(x)
     d1 = -(cs * cs)  # $-\csc^2$
     d2 = 2.0 * ct * cs * cs  # $2 \cot \csc^2$
     return _uf_unary(x, ct, d1, d2)

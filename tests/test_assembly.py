@@ -26,8 +26,13 @@ def _moments(uf):
 class TestThreePartAssembly:
     MEAN = 1176.45
     VAR = 99699.682
-    SKEW = 0.70801305
-    KURT = 6.1632855
+    # Cox (1979) Table 2 prints 81.25 / 99,699.68 / 0.7100789 / 6.18 for this
+    # problem. SKEW below agrees with the paper to 6 significant figures.
+    # KURT is the exact value of eq. (A-9) for this polynomial, cross-checked
+    # against an independent tensor-product Gauss quadrature; Table 2's printed
+    # 6.183188 is not reproducible from the paper's own equation (A-9).
+    SKEW = 0.71007690
+    KURT = 6.1611612
 
     def test_moments_input(self):
         x1 = uv([24, 1, 0, 3, 0, 15, 0, 105])

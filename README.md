@@ -64,7 +64,7 @@ We can now see the results of the calculations in two ways:
 
 ```python
 >>> Z  # "print" is optional at the command-line
-uv(1176.45, 99699.6822917, 0.708013052944, 6.16324345127)
+uv(1176.45, 99699.6822917, 0.710076903845, 6.16116115559)
 ```
 
 2. The ``describe`` class method that explains briefly what the values are:
@@ -74,8 +74,8 @@ uv(1176.45, 99699.6822917, 0.708013052944, 6.16324345127)
 SOERP Uncertain Value:
  > Mean...................  1176.45
  > Variance...............  99699.6822917
- > Skewness Coefficient...  0.708013052944
- > Kurtosis Coefficient...  6.16324345127
+ > Skewness Coefficient...  0.710076903845
+ > Kurtosis Coefficient...  6.16116115559
 ```
 
 ### Distribution Moments
@@ -86,7 +86,7 @@ The eight moments of any input variable (and four of any output variable) can be
 >>> x1.moments()
 [24.0, 1.0, 0.0, 3.0000000000000053, 0.0, 15.000000000000004, 0.0, 105.0]
 >>> Z.moments()
-[1176.45, 99699.6822917, 0.708013052944, 6.16324345127]
+[1176.45, 99699.6822917, 0.710076903845, 6.16116115559]
 ```
 
 ### Correlations

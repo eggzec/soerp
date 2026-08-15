@@ -256,7 +256,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                             )
                             * vm[i, 2]
                             * vm[j, 2]
-                            * vm[m, 1]
+                            * vm[m, 2]
                         )
 
     ############################
@@ -291,7 +291,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                         * qc[j]
                         * (
                             qc[i] * vm[i, 5] * vm[j, 3]
-                            + qc[j] * vm[i, 3] * vm[j, 6]
+                            + qc[j] * vm[i, 3] * vm[j, 5]
                         )
                         + 12
                         * qc[i]
@@ -352,7 +352,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                         * (
                             qc[i]
                             * (
-                                lc[i] * vm[i, 5] * vm[i, 2]
+                                lc[i] * vm[i, 5] * vm[j, 2]
                                 + lc[j] * vm[i, 4] * vm[j, 3]
                             )
                             + qc[j]
@@ -373,13 +373,13 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                             * qc[i]
                             * lc[j] ** 2
                             * vm[i, 3]
-                            * vm[i, 2]
+                            * vm[j, 2]
                             + 12
                             * lc[i]
                             * qc[i] ** 2
                             * qc[j]
                             * vm[i, 5]
-                            * vm[i, 2]
+                            * vm[j, 2]
                             + 12
                             * lc[i]
                             * qc[i]
@@ -405,7 +405,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                                     qc[kk] * cp[i, j] ** 2
                                     + qc[j] * cp[i, kk] ** 2
                                 )
-                                + 6 * qc[i] ** 2 * cp[j, kk]
+                                + 6 * qc[i] ** 2 * cp[j, kk] ** 2
                             )
                             * vm[i, 4]
                             * vm[j, 2]
@@ -448,7 +448,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                                 12 * cp[i, j] ** 2 * cp[i, kk] * cp[j, kk]
                                 + 24 * qc[i] * qc[j] * qc[kk] * cp[i, j]
                                 + 4 * qc[kk] * cp[i, j] ** 3
-                                + 24 * qc[i] * qc[kk] * cp[i, kk] * cp[j, kk]
+                                + 24 * qc[i] * qc[j] * cp[i, kk] * cp[j, kk]
                             )
                             * vm[i, 3]
                             * vm[j, 3]
@@ -468,17 +468,6 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                         ans += (
                             (
                                 12 * cp[i, j] * cp[i, kk] * cp[j, kk] ** 2
-                                + 24 * qc[i] * qc[j] * qc[kk] * cp[j, kk]
-                                + 4 * qc[i] * cp[j, kk] ** 3
-                                + 24 * qc[j] * qc[j] * cp[i, j] * cp[i, kk]
-                            )
-                            * vm[i, 2]
-                            * vm[j, 3]
-                            * vm[kk, 3]
-                        )
-                        ans += (
-                            (
-                                12 * cp[i, j] * cp[i, kk] * cp[j, kk]
                                 + 24 * qc[i] * qc[j] * qc[kk] * cp[j, kk]
                                 + 4 * qc[i] * cp[j, kk] ** 3
                                 + 24 * qc[j] * qc[kk] * cp[i, j] * cp[i, kk]
@@ -663,7 +652,7 @@ def rawmoment(  # ruff: ignore[too-many-branches, too-many-statements]
                                         + qc[j]
                                         * cp[i, kk]
                                         * cp[i, m]
-                                        * cp[i, m]
+                                        * cp[kk, m]
                                         + qc[kk]
                                         * cp[i, j]
                                         * cp[i, m]
