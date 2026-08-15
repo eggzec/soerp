@@ -1,0 +1,70 @@
+!    -*- f90 -*-
+! f2py interface for the SOERP moment kernels (Cox 1979, eqs. A-6..A-9).
+!
+! The Fortran declares VM(N,0:8); the 0-based second dimension is simply
+! nine doubles per input variable, so it is described here as (n,9).
+
+python module _soerp
+    interface
+
+        subroutine rawmom(n, lc, qc, cp, vm, k, ans)
+            integer, intent(hide), depend(lc) :: n = len(lc)
+            double precision dimension(n), intent(in) :: lc
+            double precision dimension(n), intent(in), depend(n) :: qc
+            double precision dimension(n,n), intent(in), depend(n) :: cp
+            double precision dimension(n,9), intent(in), depend(n) :: vm
+            integer, intent(in) :: k
+            double precision, intent(out) :: ans
+        end subroutine rawmom
+
+        subroutine cenmom(vy, k, ans)
+            double precision dimension(5), intent(in) :: vy
+            integer, intent(in) :: k
+            double precision, intent(out) :: ans
+        end subroutine cenmom
+
+        subroutine moment(n, lc, qc, cp, vm, vy, vz)
+            integer, intent(hide), depend(lc) :: n = len(lc)
+            double precision dimension(n), intent(in) :: lc
+            double precision dimension(n), intent(in), depend(n) :: qc
+            double precision dimension(n,n), intent(in), depend(n) :: cp
+            double precision dimension(n,9), intent(in), depend(n) :: vm
+            double precision dimension(5), intent(out) :: vy
+            double precision dimension(5), intent(out) :: vz
+        end subroutine moment
+
+        subroutine varcmp(n, lc, qc, cp, vm, vz2, vclc, vcqc, vccp, &
+                          wlc, wqc, wcp)
+            integer, intent(hide), depend(lc) :: n = len(lc)
+            double precision dimension(n), intent(in) :: lc
+            double precision dimension(n), intent(in), depend(n) :: qc
+            double precision dimension(n,n), intent(in), depend(n) :: cp
+            double precision dimension(n,9), intent(in), depend(n) :: vm
+            double precision, intent(in) :: vz2
+            double precision dimension(n), intent(out), depend(n) :: vclc
+            double precision dimension(n), intent(out), depend(n) :: vcqc
+            double precision dimension(n,n), intent(out), depend(n) :: vccp
+            double precision dimension(n), intent(cache,hide), depend(n) :: wlc
+            double precision dimension(n), intent(cache,hide), depend(n) :: wqc
+            double precision dimension(n,n), intent(cache,hide), depend(n) :: wcp
+        end subroutine varcmp
+
+        subroutine soerpm(n, lc, qc, cp, vm, vy, vz, vclc, vcqc, vccp, &
+                          wlc, wqc, wcp)
+            integer, intent(hide), depend(lc) :: n = len(lc)
+            double precision dimension(n), intent(in) :: lc
+            double precision dimension(n), intent(in), depend(n) :: qc
+            double precision dimension(n,n), intent(in), depend(n) :: cp
+            double precision dimension(n,9), intent(in), depend(n) :: vm
+            double precision dimension(5), intent(out) :: vy
+            double precision dimension(5), intent(out) :: vz
+            double precision dimension(n), intent(out), depend(n) :: vclc
+            double precision dimension(n), intent(out), depend(n) :: vcqc
+            double precision dimension(n,n), intent(out), depend(n) :: vccp
+            double precision dimension(n), intent(cache,hide), depend(n) :: wlc
+            double precision dimension(n), intent(cache,hide), depend(n) :: wqc
+            double precision dimension(n,n), intent(cache,hide), depend(n) :: wcp
+        end subroutine soerpm
+
+    end interface
+end python module _soerp

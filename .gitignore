@@ -205,3 +205,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# meson-python / f2py build artefacts
+*.pyd
+.mesonpy-*/
+build.log

@@ -1,6 +1,11 @@
 [build-system]
-requires = ["hatchling>=1.29.0", "hatch-vcs"]
-build-backend = "hatchling.build"
+requires = [
+    "meson-python",
+    "numpy>=2.0.0",
+    "packaging",
+    "setuptools_scm>=8"
+]
+build-backend = "mesonpy"
 
 [project]
 name = "soerp"
@@ -32,7 +37,6 @@ classifiers = [
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -96,13 +100,12 @@ all = [
     "matplotlib"
 ]
 
-[tool.hatch.version]
-source = "vcs"
+[tool.setuptools_scm]
+version_scheme = "release-branch-semver"
+local_scheme = "no-local-version"
 
-[tool.hatch.build.targets.wheel]
-include = [
-  "/soerp"
-]
+[tool.cibuildwheel]
+enable = ["cpython-prerelease"]
 
 [tool.ruff]
 line-length = 80
