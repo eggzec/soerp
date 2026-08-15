@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.stats as ss
 
-from .method_of_moments import raw2central
 from .uncertain_function import UncertainFunction
 
 
@@ -182,7 +181,7 @@ class UncertainVariable(UncertainFunction):
         >>> x3 = uv([0.5, 0.25, 2, 9, 44, 265, 1854, 14833]) # exp. distributed
         >>> Z = (x1*x2**2)/(15*(1.5 + x3))
         >>> Z
-        uv(1176.45, 99699.6822919, 0.708013052954, 6.16324345122)
+        uv(1176.45, 99699.6822919, 0.710076903845, 6.16116115559)
 
     The result shows the mean, variance, and standardized skewness and kurtosis
     of the output variable Z.
@@ -273,41 +272,37 @@ class UncertainVariable(UncertainFunction):
             scale = rv.kwds.get("scale", 1.0)
             shape = rv.args
 
+            if shape and rv.dist.numargs < 1:
+                raise ValueError(
+                    "The distribution provided doesn't support"
+                    " a 'shape' parameter"
+                )
+            if not shape and rv.dist.numargs != 0:
+                raise ValueError(
+                    "The distribution provided requires a third"
+                    " 'shape' parameter"
+                )
+
             mn = rv.mean()
             sd = rv.std()
 
-            if shape:
-                if rv.dist.numargs < 1:
-                    raise ValueError(
-                        "The distribution provided doesn't support"
-                        " a 'shape' parameter"
-                    )
+            # Integrate the standardized central moments directly rather than
+            # going via raw moments and differencing them. ``loc`` and
+            # ``scale`` must be passed through, and the differencing route
+            # loses nearly all significant digits once the mean is large
+            # compared with the spread (e.g. N(24, 1), where the 8th raw
+            # moment is ~1e11 but the 8th central moment is ~1e2).
+            def standardized_central(k: int) -> float:
+                return rv.dist.expect(
+                    lambda x: ((x - mn) / sd) ** k,
+                    args=shape,
+                    loc=loc,
+                    scale=scale,
+                )
 
-                def expect(k: int) -> float:
-                    return rv.dist.expect(
-                        lambda x: x**k, args=shape, loc=loc, scale=scale
-                    )
-
-                raw_moments = [expect(k) for k in range(1, 9)]
-                moments = raw2central(list(raw_moments))
-                for k in range(2, 8):
-                    moments[k] /= sd ** (k + 1)
-
-            else:
-                if rv.dist.numargs != 0:
-                    raise ValueError(
-                        "The distribution provided requires a third"
-                        " 'shape' parameter"
-                    )
-
-                def expect(k: int) -> float:
-                    return rv.dist.expect(lambda x: x**k)
-
-                raw_moments = [expect(k) for k in range(1, 9)]
-                moments = raw2central(list(raw_moments))
-
-            moments[0] = mn  # mean
-            moments[1] = sd**2  # variance
+            moments = [mn, sd**2] + [
+                standardized_central(k) for k in range(3, 9)
+            ]
 
             self._dist = rv
 

@@ -170,12 +170,12 @@ $$
 \begin{align}
 \nu_{y3} &= \sum_{i=1}^n \left[b_i^3\,\mu_{i3} + b_{ii}^3\,\mu_{i6}
             + 3b_i^2 b_{ii}\,\mu_{i4} + 3b_i b_{ii}^2\,\mu_{i5}\right] \\
-&\quad + \sum_{\substack{i,j \\ i < j}} \left[b_{ij}^2\,\mu_{i3}\,\mu_{j3}
+&\quad + \sum_{\substack{i,j \\ i < j}} \left[b_{ij}^3\,\mu_{i3}\,\mu_{j3}
             + 6b_i b_j b_{ij}\,\mu_{i2}\,\mu_{j2}
             + 6b_{ii}b_{jj}b_{ij}\,\mu_{i3}\,\mu_{j3}\right] \\
 &\quad + \sum_{i=1}^n \sum_{\substack{j=1 \\ j \ne i}}^n
             \left[3b_{ii}^2\,\mu_{i4}\,b_{jj}\,\mu_{j2}
-            + 6b_i b_{ii} b_{ij}\,\mu_{i2}\,\mu_{j3}
+            + 6b_i b_{jj} b_{ij}\,\mu_{i2}\,\mu_{j3}
             + 3b_{ii}b_j^2\,\mu_{i2}\,\mu_{j2}
             + 6b_i b_{ii} b_{jj}\,\mu_{i3}\,\mu_{j2}
             + 3b_i b_{ij}^2\,\mu_{i3}\,\mu_{j2}
@@ -230,9 +230,16 @@ $$
 
 $$
 \sum_{i=1}^n \sum_{\substack{j=1 \\ j \ne i}}^n
-\left\{4b_{ii}^3 b_{jj}\,\mu_{i6}\,\mu_{j2}
-+ \cdots
-+ 6b_i^2 b_{ij}^2\,\mu_{i4}\,\mu_{j2}\right\}
+\left\{
+  4b_{ii}^3 b_{jj}\,\mu_{i6}\,\mu_{j2}
+  + 4b_{ii} b_j^3\,\mu_{i2}\,\mu_{j3}
+  + 12b_i b_{ii} b_j^2\,\mu_{i3}\,\mu_{j2}
+  + 12b_i b_{ii}^2 b_{jj}\,\mu_{i5}\,\mu_{j2}
+  + 12b_i b_{ii} b_{jj}^2\,\mu_{i3}\,\mu_{j4}
+  + 4b_i b_{ij}^3\,\mu_{i4}\,\mu_{j3}
+  + 4b_{ii} b_{ij}^3\,\mu_{i5}\,\mu_{j3}
+  + 6b_{ii}^2 b_j^2\,\mu_{i4}\,\mu_{j2}
+\right\}
 $$
 
 **Triplet terms** ($i < j < k$):
@@ -241,21 +248,48 @@ $$
 \sum_{i=1}^{n-2}\sum_{j=i+1}^{n-1}\sum_{k=j+1}^{n}
 \Bigl\{
   \left[12b_{ii}^2 b_{jj}b_{kk} + 6b_{ij}^2 b_{ik}^2
-        + 12b_{ii}(b_{kk}b_{ij}^2 + b_{jj}b_{ik}^2) + 6b_{ii}^2 b_{jk}^2\right]\mu_{i4}\,\mu_{j2}\,\mu_{k2}
-  + \left[\text{similar terms for } (j,i,k)\text{ and }(k,i,j)\right]
+        + 12b_{ii}(b_{kk}b_{ij}^2 + b_{jj}b_{ik}^2) + 6b_{ii}^2 b_{jk}^2\right]\mu_{i4}\,\mu_{j2}\,\mu_{k2} \\
+  + \left[12b_{ii} b_{jj}^2 b_{kk} + 6b_{ij}^2 b_{jk}^2
+        + 12b_{jj}(b_{kk}b_{ij}^2 + b_{ii}b_{jk}^2) + 6b_{jj}^2 b_{ik}^2\right]\mu_{i2}\,\mu_{j4}\,\mu_{k2} \\
+  + \left[12b_{ii} b_{jj} b_{kk}^2 + 6b_{ik}^2 b_{jk}^2
+        + 12b_{kk}(b_{ii}b_{jk}^2 + b_{jj}b_{ik}^2) + 6b_{kk}^2 b_{ij}^2\right]\mu_{i2}\,\mu_{j2}\,\mu_{k4} \\
   + \left[12b_{ij}^2 b_{ik}b_{jk} + 24b_{ii}b_{jj}b_{kk}b_{ij}
-          + 4b_{kk}b_{ij}^3 + 24b_{ii}b_{jj}b_{ik}b_{jk}\right]\mu_{i3}\,\mu_{j3}\,\mu_{k2}
-  + \left[\text{similar terms for remaining } \mu_{i3}\mu_{j2}\mu_{k3}\text{ and }\mu_{i2}\mu_{j3}\mu_{k3}\right]
+          + 4b_{kk}b_{ij}^3 + 24b_{ii}b_{jj}b_{ik}b_{jk}\right]\mu_{i3}\,\mu_{j3}\,\mu_{k2} \\
+  + \left[12b_{ij} b_{ik}^2 b_{jk} + 24b_{ii}b_{jj}b_{kk}b_{ik}
+          + 4b_{jj}b_{ik}^3 + 24b_{ii}b_{kk}b_{ij}b_{jk}\right]\mu_{i3}\,\mu_{j2}\,\mu_{k3} \\
+  + \left[12b_{ij} b_{ik} b_{jk}^2 + 24b_{ii}b_{jj}b_{kk}b_{jk}
+          + 4b_{ii}b_{jk}^3 + 24b_{jj}b_{kk}b_{ij}b_{ik}\right]\mu_{i2}\,\mu_{j3}\,\mu_{k3} \\
   + 24\left[b_{ii}b_{jj}b_{kk} + b_{ij}b_{ik}b_{jk}\right]
      \cdot\left[b_i\,\mu_{i3}\,\mu_{j2}\,\mu_{k2}
                + b_j\,\mu_{i2}\,\mu_{j3}\,\mu_{k2}
-               + b_k\,\mu_{i2}\,\mu_{j2}\,\mu_{k3}\right]
+               + b_k\,\mu_{i2}\,\mu_{j2}\,\mu_{k3}\right] \\
+  + 12\left[b_i b_{jk}^2\,\mu_{i2}(b_{ij}\,\mu_{j3}\,\mu_{k2} + b_{ik}\,\mu_{j2}\,\mu_{k3})
+          + b_j b_{ik}^2\,\mu_{j2}(b_{ij}\,\mu_{i3}\,\mu_{k2} + b_{jk}\,\mu_{i2}\,\mu_{k3})
+          + b_k b_{ij}^2\,\mu_{k2}(b_{ik}\,\mu_{i3}\,\mu_{j2} + b_{jk}\,\mu_{i2}\,\mu_{j3})\right] \\
+  + 12\left[b_{ii} b_{jk}^2\,\mu_{i3}(b_{ij}\,\mu_{j3}\,\mu_{k2} + b_{ik}\,\mu_{j2}\,\mu_{k3})
+          + b_{jj} b_{ik}^2\,\mu_{j3}(b_{ij}\,\mu_{i3}\,\mu_{k2} + b_{jk}\,\mu_{i2}\,\mu_{k3})
+          + b_{kk} b_{ij}^2\,\mu_{k3}(b_{ik}\,\mu_{i3}\,\mu_{j2} + b_{jk}\,\mu_{i2}\,\mu_{j3})\right] \\
+  + 24b_{ij}b_{ik}b_{jk}\left[b_{ii}\,\mu_{i4}\,\mu_{j2}\,\mu_{k2}
+          + b_{jj}\,\mu_{i2}\,\mu_{j4}\,\mu_{k2}
+          + b_{kk}\,\mu_{i2}\,\mu_{j2}\,\mu_{k4}\right] \\
   + \mu_{i2}\,\mu_{j2}\,\mu_{k2}\Bigl[
-      12\left(b_{ii}b_{jj}b_{kk}^2 + b_{ii}b_{kk}b_{jk}^2 + b_{jj}b_{kk}b_{ik}^2\right) \\
-      + 6\left(b_{ii}^2 b_{jk}^2 + b_{jj}^2 b_{ik}^2 + b_{kk}^2 b_{ij}^2\right)
+      12\left(b_{ii}b_{jj}b_k^2 + b_{ii}b_{kk}b_j^2 + b_{jj}b_{kk}b_i^2\right)
+      + 6\left(b_i^2 b_{jk}^2 + b_j^2 b_{ik}^2 + b_k^2 b_{ij}^2\right) \\
       + 24\left(b_{ij}b_{ik}b_j b_k + b_{ij}b_{jk}b_i b_k + b_{ik}b_{jk}b_i b_j\right)
       + 24\left(b_i b_j b_{kk}b_{ij} + b_i b_k b_{jj}b_{ik} + b_j b_k b_{ii}b_{jk}\right)
-    \Bigr]
+    \Bigr] \\
+  + \mu_{i3}\,\mu_{j2}\,\mu_{k2}\Bigl[
+      24b_j b_{ij} b_{ii} b_{kk} + 24b_k b_{ik} b_{ii} b_{jj} + 12b_i b_{jk}^2 b_{ii}
+      + 24b_j b_{ik} b_{jk} b_{ii} + 24b_k b_{ij} b_{jk} b_{ii}
+      + 12b_i b_{ik}^2 b_{jj} + 12b_i b_{ij}^2 b_{kk}\Bigr] \\
+  + \mu_{i2}\,\mu_{j3}\,\mu_{k2}\Bigl[
+      24b_i b_{ij} b_{jj} b_{kk} + 24b_k b_{jk} b_{ii} b_{jj} + 12b_j b_{ik}^2 b_{jj}
+      + 24b_i b_{ik} b_{jk} b_{jj} + 24b_k b_{ij} b_{ik} b_{jj}
+      + 12b_j b_{jk}^2 b_{ii} + 12b_j b_{ij}^2 b_{kk}\Bigr] \\
+  + \mu_{i2}\,\mu_{j2}\,\mu_{k3}\Bigl[
+      24b_i b_{ik} b_{jj} b_{kk} + 24b_j b_{jk} b_{ii} b_{kk} + 12b_k b_{ij}^2 b_{kk}
+      + 24b_i b_{ij} b_{jk} b_{kk} + 24b_j b_{ij} b_{ik} b_{kk}
+      + 12b_k b_{jk}^2 b_{ii} + 12b_k b_{ik}^2 b_{jj}\Bigr]
 \Bigr\}
 $$
 
