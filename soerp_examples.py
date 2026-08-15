@@ -9,6 +9,25 @@ import math
 from soerp import Chi2, Exp, Gamma, N, umath, uv
 
 
+# Reference values for each example, kept as strings so the printed output is
+# byte-for-byte what the original script emitted. Each example is run three
+# times (given moments, scipy distributions, convenience constructors), so
+# these live here rather than being repeated at every call site.
+ASSEMBLY_EXPECTED = ("1176.45", "99699.682", "0.71007690", "6.1611612")
+ORIFICE_EXPECTED = ("1330.9997", "58.210763", "0.010942207", "3.0003269")
+STACKUP_EXPECTED = ("4.5", "0.75", "0.385", "3.22")
+SCHEDULING_EXPECTED = ("51.7", "33.3", "0.52", "3.49")
+
+
+def print_expected(mean: str, var: str, skew: str, kurt: str) -> None:
+    """Print the reference values that the result below should reproduce."""
+    print("Results should be about:")
+    print(f" > Mean...................  {mean}")
+    print(f" > Variance...............  {var}")
+    print(f" > Skewness Coefficient...  {skew}")
+    print(f" > Kurtosis Coefficient...  {kurt}")
+
+
 print("UNCERTAIN DISTRIBUTION TEST FUNCTIONS USING GIVEN MOMENTS")
 print("*" * 80)
 print("Example of a three part assembly")
@@ -17,11 +36,7 @@ x2 = uv([37, 16, 0, 3, 0, 15, 0, 105])  # normally distributed
 x3 = uv([0.5, 0.25, 2, 9, 44, 265, 1854, 14833])  # exponentially distributed
 
 Z = (x1 * x2**2) / (15 * (1.5 + x3))
-print("Results should be about:")
-print(" > Mean...................  1176.45")
-print(" > Variance...............  99699.682")
-print(" > Skewness Coefficient...  0.71007690")
-print(" > Kurtosis Coefficient...  6.1611612")
+print_expected(*ASSEMBLY_EXPECTED)
 print(Z)
 
 print("*" * 80)
@@ -32,11 +47,7 @@ P = uv([361, 4, 0, 3, 0, 15, 0, 105])  # normally distributed
 t = uv([165, 0.25, 0, 3, 0, 15, 0, 105])  # normally distributed
 C = 38.4
 Q = C * umath.sqrt((520 * H * P) / (M * (t + 460)))
-print("Results should be about:")
-print(" > Mean...................  1330.9997")
-print(" > Variance...............  58.210763")
-print(" > Skewness Coefficient...  0.010942207")
-print(" > Kurtosis Coefficient...  3.0003269")
+print_expected(*ORIFICE_EXPECTED)
 print(Q)
 
 print("*" * 80)
@@ -45,11 +56,7 @@ x = uv([1.5, 0.25, 2 / 3.0, 11 / 3.0, 0, 0, 0, 0])  # gamma distributed
 y = uv([1.5, 0.25, 2 / 3.0, 11 / 3.0, 0, 0, 0, 0])  # gamma distributed
 z = uv([1.5, 0.25, 2 / 3.0, 11 / 3.0, 0, 0, 0, 0])  # gamma distributed
 w = x + y + z
-print("Results should be about:")
-print(" > Mean...................  4.5")
-print(" > Variance...............  0.75")
-print(" > Skewness Coefficient...  0.385")
-print(" > Kurtosis Coefficient...  3.22")
+print_expected(*STACKUP_EXPECTED)
 print(w)
 
 print("*" * 80)
@@ -61,11 +68,7 @@ s4 = uv([10, 10, 0.63, 3.6, 0, 0, 0, 0])  # gamma distributed
 s5 = uv([0.2, 0.04, 2, 9, 0, 0, 0, 0])  # exponental distributed
 s6 = uv([10, 20, 0.89, 4.2, 0, 0, 0, 0])  # chi-square distributed
 T = s1 + s2 + s3 + s4 + s5 + s6
-print("Results should be about:")
-print(" > Mean...................  51.7")
-print(" > Variance...............  33.3")
-print(" > Skewness Coefficient...  0.52")
-print(" > Kurtosis Coefficient...  3.49")
+print_expected(*SCHEDULING_EXPECTED)
 print(T)
 
 ###############################################################################
@@ -84,11 +87,7 @@ else:
     x2 = uv(rv=ss.norm(loc=37, scale=4))  # normally distributed
     x3 = uv(rv=ss.expon(scale=1 / 2.0))  # exponentially distributed
     Z = (x1 * x2**2) / (15 * (1.5 + x3))
-    print("Results should be about:")
-    print(" > Mean...................  1176.45")
-    print(" > Variance...............  99699.682")
-    print(" > Skewness Coefficient...  0.71007690")
-    print(" > Kurtosis Coefficient...  6.1611612")
+    print_expected(*ASSEMBLY_EXPECTED)
     print(Z)
 
     print("*" * 80)
@@ -99,11 +98,7 @@ else:
     t = uv(rv=ss.norm(loc=165, scale=0.5))
     C = 38.4
     Q = C * umath.sqrt((520 * H * P) / (M * (t + 460)))
-    print("Results should be about:")
-    print(" > Mean...................  1330.9997")
-    print(" > Variance...............  58.210763")
-    print(" > Skewness Coefficient...  0.010942207")
-    print(" > Kurtosis Coefficient...  3.0003269")
+    print_expected(*ORIFICE_EXPECTED)
     print(Q)
 
     print("*" * 80)
@@ -119,11 +114,7 @@ else:
     y = uv(rv=ss.gamma(shape, scale=scale))
     z = uv(rv=ss.gamma(shape, scale=scale))
     w = x + y + z
-    print("Results should be about:")
-    print(" > Mean...................  4.5")
-    print(" > Variance...............  0.75")
-    print(" > Skewness Coefficient...  0.385")
-    print(" > Kurtosis Coefficient...  3.22")
+    print_expected(*STACKUP_EXPECTED)
     print(w)
 
     print("*" * 80)
@@ -143,11 +134,7 @@ else:
     s5 = uv(rv=ss.expon(scale=0.2))
     s6 = uv(rv=ss.chi2(10))
     T = s1 + s2 + s3 + s4 + s5 + s6
-    print("Results should be about:")
-    print(" > Mean...................  51.7")
-    print(" > Variance...............  33.3")
-    print(" > Skewness Coefficient...  0.52")
-    print(" > Kurtosis Coefficient...  3.49")
+    print_expected(*SCHEDULING_EXPECTED)
     print(T)
 
     print("*" * 80)
@@ -181,11 +168,7 @@ else:
     x2 = N(37, 4)  # normally distributed
     x3 = Exp(2)  # exponentially distributed
     Z = (x1 * x2**2) / (15 * (1.5 + x3))
-    print("Results should be about:")
-    print(" > Mean...................  1176.45")
-    print(" > Variance...............  99699.682")
-    print(" > Skewness Coefficient...  0.71007690")
-    print(" > Kurtosis Coefficient...  6.1611612")
+    print_expected(*ASSEMBLY_EXPECTED)
     print(Z)
 
     print("*" * 80)
@@ -196,11 +179,7 @@ else:
     t = N(165, 0.5)
     C = 38.4
     Q = C * umath.sqrt((520 * H * P) / (M * (t + 460)))
-    print("Results should be about:")
-    print(" > Mean...................  1330.9997")
-    print(" > Variance...............  58.210763")
-    print(" > Skewness Coefficient...  0.010942207")
-    print(" > Kurtosis Coefficient...  3.0003269")
+    print_expected(*ORIFICE_EXPECTED)
     print(Q)
 
     print("*" * 80)
@@ -216,11 +195,7 @@ else:
     y = Gamma(shape, scale)
     z = Gamma(shape, scale)
     w = x + y + z
-    print("Results should be about:")
-    print(" > Mean...................  4.5")
-    print(" > Variance...............  0.75")
-    print(" > Skewness Coefficient...  0.385")
-    print(" > Kurtosis Coefficient...  3.22")
+    print_expected(*STACKUP_EXPECTED)
     print(w)
 
     print("*" * 80)
@@ -240,11 +215,7 @@ else:
     s5 = Exp(5)
     s6 = Chi2(10)
     T = s1 + s2 + s3 + s4 + s5 + s6
-    print("Results should be about:")
-    print(" > Mean...................  51.7")
-    print(" > Variance...............  33.3")
-    print(" > Skewness Coefficient...  0.52")
-    print(" > Kurtosis Coefficient...  3.49")
+    print_expected(*SCHEDULING_EXPECTED)
     print(T)
 
     print("*" * 80)

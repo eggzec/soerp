@@ -92,3 +92,31 @@ class TestUmath:
         x = N(3.2, 0.01)
         r = umath.ceil(x)
         assert r.mean == pytest.approx(4.0)
+
+
+class TestCot:
+    r"""cot() is separated out because its derivatives are easy to get wrong:
+    cot' = $-\csc^2$ and cot'' = $2\cot\csc^2$, and $\csc$ is not $\tan$."""
+
+    X0 = 0.7
+
+    def test_cot_scalar(self):
+        assert umath.cot(self.X0) == pytest.approx(1.0 / math.tan(self.X0))
+
+    def test_cot_derivatives(self):
+        """Regression guard: cot() used to build tan() where csc() was
+        required, which made both derivatives wrong."""
+        x = N(self.X0, 1e-8)
+        r = umath.cot(x)
+        cot0 = math.cos(self.X0) / math.sin(self.X0)
+        csc2 = 1.0 / math.sin(self.X0) ** 2
+        assert r.x == pytest.approx(cot0)
+        assert r.d(x) == pytest.approx(-csc2)
+        assert r.d2(x) == pytest.approx(2.0 * cot0 * csc2)
+
+    def test_cot_uncertain(self):
+        x = N(self.X0, 0.01)
+        r = umath.cot(x)
+        cot0 = math.cos(self.X0) / math.sin(self.X0)
+        assert r.mean == pytest.approx(cot0, rel=1e-2)
+        assert r.var > 0
