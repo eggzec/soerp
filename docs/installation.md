@@ -126,9 +126,58 @@ Installation can be done using the updated environment spec file.
 pip install --upgrade "git+https://github.com/eggzec/soerp.git#egg=soerp"
 ```
 
+## Building from source
+
+The moment equations are implemented as FORTRAN 77 subroutines and compiled
+into an extension module with [f2py](https://numpy.org/doc/stable/f2py/), so
+building from source needs a Fortran compiler in addition to the Python
+build requirements. Released wheels are pre-compiled, so this only applies
+if you build a checkout yourself.
+
+=== "Linux"
+
+	```bash
+	sudo apt-get install gfortran
+	```
+
+=== "macOS"
+
+	```bash
+	brew install gcc
+	```
+
+=== "Windows"
+
+	```bash
+	choco install mingw
+	```
+
+With the compiler available:
+
+```bash
+python bin/build.py install   # build and install
+python bin/build.py wheel     # build a wheel into dist/
+python bin/build.py clean     # remove build artefacts
+```
+
+For day-to-day development prefer an editable install, which rebuilds the
+extension automatically whenever the Fortran source changes:
+
+```bash
+uv pip install -e .
+```
+
 ## Dependencies
 
 - Python >=3.10
 - [numpy](https://pypi.org/project/numpy)
 - [scipy](https://pypi.org/project/scipy)
 - [matplotlib](https://pypi.org/project/matplotlib) (optional)
+
+Build-time only:
+
+- a Fortran compiler (`gfortran`)
+- [meson-python](https://pypi.org/project/meson-python), used as the build
+  backend
+- [setuptools_scm](https://pypi.org/project/setuptools-scm), which derives
+  the version from the git history

@@ -67,23 +67,40 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v8
         with:
-          name: ${{ needs.fresh_build.outputs.artifact_name }}
-          run-id: ${{ needs.fresh_build.outputs.run_id }}
-          path: ./dist
+          fetch-depth: 0
+
+      # The moment equations are FORTRAN 77 compiled by f2py, so every test
+      # runner needs a Fortran compiler. Linux images ship gfortran; macOS
+      # and Windows do not reliably.
+      - name: Install gfortran (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gcc || brew link --overwrite gcc
+          echo "$(brew --prefix gcc)/bin" >> "$GITHUB_PATH"
+
+      - name: Install gfortran (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          command -v gfortran >/dev/null 2>&1 || choco install -y mingw
+
+      - name: Show Fortran compiler
+        shell: bash
+        run: gfortran --version
 
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: ${{ matrix.py-version }}
 
+      # Built from source rather than from the shared artifact: the wheel is
+      # now platform- and interpreter-specific, so a single artifact cannot
+      # be installed across this matrix.
       - name: Install Packages
         shell: bash
         run: |
           uv sync --no-dev --group test
-          uv pip install -v ./dist/*.whl
+          uv pip install -v .
 
       - name: Run Tests
         run: uv run --no-sync pytest -v --cov --cov-report=xml tests
