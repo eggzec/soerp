@@ -216,6 +216,9 @@ def rawmoment(
             f"Can only calculate raw moments k = 0 to {MAX_MOMENT}"
         )
     lc, qc, cp, moments = _kernel_inputs(slc, sqc, scp, vm)
+    if lc.size == 0:
+        # A constant carries no variables, so y is identically zero.
+        return 1.0 if k == 0 else 0.0
     return float(_soerp.rawmom(lc, qc, cp, moments, k))
 
 
@@ -288,6 +291,8 @@ def variance_components(
         The actual variance components from the cross-product 2nd-order terms
     """
     lc, qc, cp, moments = _kernel_inputs(slc, sqc, scp, var_moments)
+    if lc.size == 0:
+        return np.zeros(0), np.zeros(0), np.zeros((0, 0))
     return _soerp.varcmp(lc, qc, cp, moments, vz[2])
 
 
@@ -345,7 +350,7 @@ def variance_contrib(
 ###############################################################################
 
 
-def soerp_numeric(  # ruff: ignore[too-many-arguments, too-many-positional-arguments, too-many-branches, too-many-locals]
+def soerp_numeric(  # ruff: ignore[too-many-arguments, too-many-positional-arguments, too-many-branches, too-many-locals, too-many-statements]
     slc: NDArray,
     sqc: NDArray,
     scp: NDArray,
@@ -444,9 +449,19 @@ def soerp_numeric(  # ruff: ignore[too-many-arguments, too-many-positional-argum
 
     lc, qc, cp, moments = _kernel_inputs(slc, sqc, scp, var_moments)
 
-    # A single trip across the language boundary: the raw moments, the
-    # central moments and every variance component come back from one call.
-    vy, vz, vc_lc, vc_qc, vc_cp = _soerp.soerpm(lc, qc, cp, moments)
+    if lc.size == 0:
+        # A constant: y is identically zero, so only the 0th moment is 1
+        # and there are no variance components to report.
+        vy = np.zeros(MAX_MOMENT + 1)
+        vz = np.zeros(MAX_MOMENT + 1)
+        vy[0] = vz[0] = 1.0
+        vc_lc = np.zeros(0)
+        vc_qc = np.zeros(0)
+        vc_cp = np.zeros((0, 0))
+    else:
+        # A single trip across the language boundary: the raw moments, the
+        # central moments and every variance component come back at once.
+        vy, vz, vc_lc, vc_qc, vc_cp = _soerp.soerpm(lc, qc, cp, moments)
 
     if debug and not silent:
         print("*" * 80)

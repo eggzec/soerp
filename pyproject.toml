@@ -90,6 +90,7 @@ test = [
     "pytest>=8.3.5",
     "pytest-cov>=7.0.0",
     "pytest-xdist>=3.6.1",
+    "matplotlib",
 ]
 
 [project.optional-dependencies]
@@ -158,8 +159,14 @@ ignore = [
     "missing-type-function-argument",     # [flake8-annotations](https://docs.astral.sh/ruff/rules/missing-type-function-argument/)
     "missing-return-type-undocumented-public-function",     # [flake8-annotations](https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/)
     "missing-return-type-private-function",     # [flake8-annotations](https://docs.astral.sh/ruff/rules/missing-return-type-private-function/)
+    "missing-return-type-static-method",     # [flake8-annotations](https://docs.astral.sh/ruff/rules/missing-return-type-static-method/) - fixture helpers
     "assert",       # [flake8-bandit](https://docs.astral.sh/ruff/rules/assert/)
     "no-self-use",    # [pylint](https://docs.astral.sh/ruff/rules/no-self-use/)
+    # Setters and structural zeros are stored verbatim, so exact equality is
+    # the property under test rather than a floating-point hazard.
+    "float-equality-comparison",   # [pylint](https://docs.astral.sh/ruff/rules/float-equality-comparison/)
+    # The matplotlib backend has to be selected before pyplot is imported.
+    "import-outside-top-level",    # [pylint](https://docs.astral.sh/ruff/rules/import-outside-top-level/)
 ]
 
 [tool.ruff.format]
@@ -170,3 +177,18 @@ skip-magic-trailing-comma = true
 addopts = "--doctest-modules"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.coverage.run]
+source = ["soerp"]
+
+# The package is imported from site-packages (it carries a compiled
+# extension, so it cannot be imported from the source tree), but coverage
+# must be reported against src/soerp for the results to line up with the
+# repository.
+[tool.coverage.paths]
+source = ["src/soerp", "*/site-packages/soerp"]
+
+[tool.coverage.report]
+exclude_also = [
+    "if TYPE_CHECKING:",
+]

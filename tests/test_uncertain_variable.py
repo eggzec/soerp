@@ -6,7 +6,8 @@ distributions, where the eight standardized moments are derived by integration.
 import pytest
 import scipy.stats as ss
 
-from soerp import U, uv
+from soerp import N, U, uv
+from soerp.uncertain_variable import matplotlib_installed
 
 
 class TestConstructionErrors:
@@ -70,3 +71,96 @@ class TestStandardizedMoments:
         assert standardized == pytest.approx(
             [2.0, 9.0, 44.0, 265.0, 1854.0, 14833.0], rel=1e-6
         )
+
+
+class TestMomentAccessors:
+    def test_moments_returns_all_eight(self):
+        x = uv([10, 4, 0, 3, 0, 15, 0, 105])
+        assert x.moments() == [10, 4, 0, 3, 0, 15, 0, 105]
+
+    @pytest.mark.parametrize(
+        ("idx", "want"), [(0, 10), (1, 4), (2, 0), (3, 3), (7, 105)]
+    )
+    def test_moments_by_index(self, idx, want):
+        x = uv([10, 4, 0, 3, 0, 15, 0, 105])
+        assert x.moments(idx) == want
+
+    def test_out_of_range_index_returns_the_whole_list(self):
+        x = uv([10, 4, 0, 3, 0, 15, 0, 105])
+        assert x.moments(99) == x.moments()
+
+    def test_named_properties(self):
+        x = uv([10, 4, 0.5, 3.2, 0, 15, 0, 105])
+        assert x.mean == 10
+        assert x.var == 4
+        assert x.std == pytest.approx(2.0)
+        assert x.skew == 0.5
+        assert x.kurt == 3.2
+
+    def test_hash_is_identity_based(self):
+        x = N(1.0, 0.1)
+        assert hash(x) == hash(x)
+        assert hash(x) != hash(N(1.0, 0.1))
+
+
+class TestSetters:
+    @staticmethod
+    def _variable():
+        return uv([10, 4, 0, 3, 0, 15, 0, 105])
+
+    def test_set_mean(self):
+        x = self._variable()
+        x.set_mean(42.0)
+        assert x.mean == 42.0
+
+    def test_set_std(self):
+        x = self._variable()
+        x.set_std(3.0)
+        assert x.var == pytest.approx(9.0)
+
+    def test_set_var(self):
+        x = self._variable()
+        x.set_var(25.0)
+        assert x.var == 25.0
+        assert x.std == pytest.approx(5.0)
+
+    def test_set_skew(self):
+        x = self._variable()
+        x.set_skew(1.5)
+        assert x.skew == 1.5
+
+    def test_set_kurt(self):
+        x = self._variable()
+        x.set_kurt(4.5)
+        assert x.kurt == 4.5
+
+    def test_set_moments(self):
+        x = self._variable()
+        x.set_moments([1, 2, 3, 4, 5, 6, 7, 8])
+        assert x.moments() == [1, 2, 3, 4, 5, 6, 7, 8]
+
+    @pytest.mark.parametrize("bad", [[1, 2, 3], [1] * 9, []])
+    def test_set_moments_requires_exactly_eight(self, bad):
+        x = self._variable()
+        with pytest.raises(ValueError, match="eight values"):
+            x.set_moments(bad)
+
+
+@pytest.mark.skipif(not matplotlib_installed, reason="matplotlib not installed")
+class TestPlot:
+    def test_plotting_needs_a_scipy_distribution(self):
+        x = uv([10, 4, 0, 3, 0, 15, 0, 105])
+        with pytest.raises(NotImplementedError, match="Cannot determine"):
+            x.plot()
+
+    def test_plot_from_a_scipy_distribution(self, monkeypatch):
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        monkeypatch.setattr(plt, "show", lambda *a, **k: None)
+        x = uv(rv=ss.norm(loc=0, scale=1))
+        x.plot()
+        x.plot(vals=[-2.0, 2.0])
+        plt.close("all")
