@@ -1,4 +1,6 @@
-# soerp
+![SOERP](assets/soerp-banner.png)
+
+# SOERP
 
 ![SOERP logo](assets/SOERP.svg){ width="100" }
 
