@@ -1,4 +1,6 @@
-# soerp
+![SOERP](docs/assets/soerp-banner.png)
+
+# SOERP
 
 **Second Order Error Propagation for Python**
 
