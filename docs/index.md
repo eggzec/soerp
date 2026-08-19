@@ -1,8 +1,8 @@
-![SOERP](assets/soerp-banner.png)
+![SOERP](https://raw.githubusercontent.com/eggzec/soerp/master/docs/assets/soerp-banner.png)
 
 # SOERP
 
-![SOERP logo](assets/SOERP.svg){ width="100" }
+![SOERP logo](https://raw.githubusercontent.com/eggzec/soerp/master/docs/assets/soerp-icon.svg){ width="120" }
 
 **Second Order Error Propagation for Python**
 

@@ -1,4 +1,4 @@
-![SOERP](docs/assets/soerp-banner.png)
+![SOERP](https://raw.githubusercontent.com/eggzec/soerp/master/docs/assets/soerp-banner.png)
 
 # SOERP
 
